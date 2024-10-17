@@ -828,6 +828,7 @@ class FortranGraph:
         self.add_nodes(self.root)
 
         if graphviz_installed:
+            self.dot.attr( size='18,60') # ADD: maximum size in inches (width, height) 
             self.svg_src = self.dot.pipe().decode("utf-8")
             self.svg_src = self.svg_src.replace(
                 "<svg ", '<svg id="' + re.sub(r"[^\w]", "", self.ident) + '" '
