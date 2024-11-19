@@ -133,7 +133,8 @@ class AliasPreprocessor(Preprocessor):
     """Substitute text aliases of the form ``|foo|`` from a dictionary
     of aliases and their replacements"""
 
-    ALIAS_RE = re.compile(r"\|([^ ].*?[^ ]?)\|")
+    # pattern to match alias only if not preceded by `\`
+    ALIAS_RE = re.compile(r"(?<!\\)\|([^ ].*?[^ ]?)\|")
 
     def __init__(self, md: Markdown, aliases: Dict[str, str]):
         self.aliases = aliases
@@ -149,7 +150,11 @@ class AliasPreprocessor(Preprocessor):
 
     def run(self, lines: List[str]) -> List[str]:
         for line_num, line in enumerate(lines):
-            lines[line_num] = self.ALIAS_RE.sub(self._lookup, line)
+            # replace the real aliases
+            line = self.ALIAS_RE.sub(self._lookup, line)
+            # replace the escaped aliases verbatim, without the preceding escape char `\`
+            line = re.sub(r"\\(\|([^ ].*?[^ ]?)\|)", r"\g<1>",line)
+            lines[line_num]=line
         return lines
 
 
