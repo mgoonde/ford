@@ -87,7 +87,7 @@ class Tipue_Search_JSON_Generator:
 
         node = {
             "title": page_title,
-            "text": page_text,
+            "text": page_text[:min(len(page_text),1000)],
             "tags": page_category,
             "loc": str(page_url),
         }
